@@ -7,7 +7,7 @@ const filesRouter = express.Router()
 
 filesRouter.post(
   "/:userId/avatar",
-  multer().single("avatar"),
+  multer({ limits: { fileSize: 1024 * 1024 } }).single("avatar"),
   async (req, res, next) => {
     // "avatar" needs to match precisely the name of the field appended in the FormData object coming from the FE.
     // If they don't match, multer is not going to find that file
