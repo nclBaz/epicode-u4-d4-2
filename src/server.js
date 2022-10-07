@@ -3,8 +3,10 @@ import express from "express" // NEW SYNTAX (you can use this only if type:"modu
 import listEndpoints from "express-list-endpoints"
 import cors from "cors"
 import createHttpError from "http-errors"
+import { join } from "path"
 import usersRouter from "./api/users/index.js"
 import booksRouter from "./api/books/index.js"
+import filesRouter from "./api/files/index.js"
 import {
   badRequestHandler,
   genericErrorHandler,
@@ -14,6 +16,7 @@ import {
 
 const server = express()
 const port = 3001
+const publicFolderPath = join(process.cwd(), "./public")
 
 // *************************************** MIDDLEWARES *************************************
 
@@ -37,13 +40,14 @@ const policeOfficer = (req, res, next) => {
 
 server.use(loggerMiddleware)
 server.use(policeOfficer) */
+server.use(express.static(publicFolderPath))
 server.use(cors())
 server.use(express.json()) // If you don't add this line BEFORE the endpoints, all requests' bodies will be UNDEFINED
 
 // ************************************* ENDPOINTS ******************************************
 server.use("/users", usersRouter) // /users will be the prefix that all the endpoints in the usersRouter will have
 server.use("/books", booksRouter)
-
+server.use("/files", filesRouter)
 // ********************************** ERROR HANDLERS ****************************************
 
 server.use(badRequestHandler)
