@@ -27,11 +27,21 @@ filesRouter.post(
   }
 )
 
-filesRouter.post("/multiple", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error)
+filesRouter.post(
+  "/multiple",
+  multer().array("avatars"),
+  async (req, res, next) => {
+    try {
+      console.log("FILE --> ", req.files)
+      const arrayOfPromises = req.files.map(file =>
+        saveUsersAvatars(file.originalname, file.buffer)
+      )
+      await Promise.all(arrayOfPromises)
+      res.send({ message: "FILES UPLOADED!" })
+    } catch (error) {
+      next(error)
+    }
   }
-})
+)
 
 export default filesRouter
